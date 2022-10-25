@@ -1,16 +1,23 @@
 #TODO : YUMP
 
 import pygame
+import random
 from level import Level
 from player import Player
+from ennemies import Ennemies
 
 running=True
 stage=Level()
 player=Player()
 screen=pygame.display.set_mode((715,813))
 keysDown=[False,False,False,False,False]
+
+temps=0
+barrel=[Ennemies(0)]
+
 while running:
     pygame.time.Clock().tick(30)
+    temps+=1
 
     for event in pygame.event.get():
         if event.type==pygame.QUIT:
@@ -32,4 +39,34 @@ while running:
 
     stage.showSelf(screen)
     player.showSelf(screen)
+    
+    
+    for i in barrel:
+        i.is_falling()
+
+        i.move(screen)
+
+        i.fall(screen)
+
+        if i.etage%2==0:
+            if temps%2==0:
+                i.nb+=1
+            if i.nb==5:
+                i.nb=1
+
+        else:
+            if temps%2==0:
+                i.nb-=1
+            if i.nb==0:
+                i.nb=4
+        i.afficher(screen,temps)
+
+        if i.etage==5 and i.x<=52:
+            barrel.remove(i)
+
     pygame.display.update()
+    
+    if temps%60==0 and random.randint(0,1)==0:
+
+        barrel.append(Ennemies(0))
+        
