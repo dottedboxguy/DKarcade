@@ -1,0 +1,22 @@
+import pygame
+import random
+class Hammer:
+    def __init__(self):
+            n=random.randint(1,4)
+            if n==1:
+                self.x=610
+                self.y=600
+            elif n==2:
+                self.x=80
+                self.y=500
+            elif n==3:
+                self.x=610
+                self.y=400
+            else:
+                self.x=80
+                self.y=320
+
+
+    def afficher(self,screen):
+        image=pygame.image.load("sprites/hammer.png")
+        screen.blit(image,(self.x,self.y))
