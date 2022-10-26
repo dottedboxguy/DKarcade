@@ -5,13 +5,14 @@ import random
 from level import Level
 from player import Player
 from ennemies import Ennemies
+from hammer import Hammer
 
 running=True
 stage=Level()
 player=Player()
 screen=pygame.display.set_mode((715,813))
 keysDown=[False,False,False,False,False]
-
+hammer=Hammer()
 temps=0
 barrel=[Ennemies(0)]
 
@@ -39,7 +40,7 @@ while running:
 
     stage.showSelf(screen)
     player.showSelf(screen)
-    
+    hammer.afficher(screen)
     
     for i in barrel:
         i.is_falling()
