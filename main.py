@@ -46,28 +46,32 @@ while running:
         i.is_falling()
 
         i.move(screen)
+        
+        i.ladder(screen)
 
         i.fall(screen)
+        
+        if i.is_ladder==False: 
+            if i.etage%2==0:
+                if temps%2==0:
+                    i.nb+=1
+                if i.nb==5:
+                    i.nb=1
 
-        if i.etage%2==0:
-            if temps%2==0:
-                i.nb+=1
-            if i.nb==5:
-                i.nb=1
-
-        else:
-            if temps%2==0:
-                i.nb-=1
-            if i.nb==0:
-                i.nb=4
-        i.afficher(screen,temps)
-
+            else:
+                if temps%2==0:
+                    i.nb-=1
+                if i.nb==0:
+                    i.nb=4
+            i.afficher(screen,temps)
+            
+            
         if i.etage==5 and i.x<=52:
             barrel.remove(i)
 
     pygame.display.update()
     
-    if temps%60==0 and random.randint(0,1)==0:
+    if temps%60==0 :
 
         barrel.append(Ennemies(0))
         
