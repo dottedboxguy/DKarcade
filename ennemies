@@ -2,29 +2,33 @@ from random import randint
 import pygame,time
 
 class Ennemies:
-    def __init__(self,type):
-        if type==0:  #type 0=tonneau type 1 =flamme
-            self.x=220
-            self.y=245
-            self.etage=0
-            self.falling=False
-            self.nb=1
-        else:
-            self.x=randint(0,100)
-            self.y+=randint(0,6)*30
+    def __init__(self):
+
+        self.x=220
+        self.y=245
+        self.etage=0
+        self.falling=False
+        self.nb=1
+        self.is_ladder=False
+        self.n=0
+        self.chance=None
+
 
 
 
     def afficher(self,screen,temps):    #méthode qui permet l'affichage des sprites des tonneaux
 
+        if self.is_ladder==True:
+            image=pygame.image.load("sprites/barrel-down.png")
+            screen.blit(image,(self.x,self.y))
 
-
-        image=pygame.image.load("sprites/barrel"+str(self.nb)+".png")
-        screen.blit(image,(self.x,self.y))
+        else:
+            image=pygame.image.load("sprites/barrel"+str(self.nb)+".png")
+            screen.blit(image,(self.x,self.y))
 
 
     def move(self,screen):  #méthode qui permet le déplacement des tonneaux selon l'étage
-        if self.falling==False:
+        if self.falling==False and self.is_ladder==False:
             color=screen.get_at((self.x,self.y+23))
             if color==( 6, 6, 6, 255) or color==( 7, 7, 7, 255) or color==( 6, 7, 7, 255):
                 self.y=self.y+3
@@ -34,21 +38,40 @@ class Ennemies:
             elif self.etage%2!=0:
                 self.x=self.x-6
 
-    def is_falling(self):   #méthode qui permet de définir si le tonneau tombe ou non(lorsqu'il est à la fin de l'étage)
+    def is_falling(self,screen):   #méthode qui permet de définir si le tonneau tombe ou non(lorsqu'il est à la fin de l'étage)
         if self.etage%2==0 and self.x>=651:
             self.falling=True
         if self.etage%2!=0 and self.x<=51:
             self.falling=True
 
+    def ladder(self,screen):#méthode qui permet de détecter une échelle
+        ladders=[580,127,365,127,580,0]#coordonnées x des echelles dans l'ordre des étages (de 0 à 4)
+
+        if self.chance==None:
+            self.chance=randint(0,1)
+        if self.x<=ladders[self.etage]+5 and self.x>=ladders[self.etage] and self.chance==0:
+
+            self.is_ladder=True
+        else:
+            self.chance=None
+            self.is_ladder=False
+
+
     def fall(self,screen):  #méthode qui permet le déplacement des tonneaux lorsqu'ils tombent (à la fin d'un étage ou à une échelle)
-        if self.falling==True:
+        if self.falling==True or self.is_ladder==True:
             color=screen.get_at((self.x,self.y+23))
-            if color!=(166,6,6,255) and color!=(255,6,64,255):
+            if color!=(166,6,6,255) and color!=(255,6,64,255) or (self.n<40 and self.is_ladder==True):
+
                 self.y+=6
-                if self.etage%2==0:
+                if self.is_ladder==True:
+                    self.n+=6
+                if self.etage%2==0 and self.is_ladder==False:
                     self.x+=1
-                else:
+                elif self.etage%2!=0 and self.is_ladder==False:
                     self.x-=1
             else:
+
+                if self.is_ladder==True:
+                    self.n=0
                 self.etage+=1
                 self.falling=False
